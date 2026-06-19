@@ -1,0 +1,195 @@
+{
+  "id": "mh370",
+  "name": "MH370",
+  "full_name": "Malaysia Airlines Flight MH370",
+  "status": "Unsolved",
+  "category": "Air Disaster",
+  "date": "March 8, 2014",
+  "location": "Southern Indian Ocean (presumed)",
+  "summary": "Malaysia Airlines Flight MH370 disappeared on 8 March 2014 while flying from Kuala Lumpur to Beijing. The Boeing 777 vanished from radar with 239 people on board. Despite one of the largest search operations in history, the main wreckage has never been found.",
+  "known_facts": [
+    "Flight took off from Kuala Lumpur International Airport at 00:41 MYT on March 8, 2014.",
+    "Last voice communication from the cockpit occurred at 01:19 AM: 'Good night, Malaysian three seven zero.'",
+    "The aircraft's transponder stopped transmitting at 01:21 AM, just after handover to Vietnamese air traffic control.",
+    "Malaysian military radar tracked the plane as it made an unusual westward turn back over the Malay Peninsula.",
+    "The aircraft continued flying for approximately 7 more hours after last contact, based on satellite handshake data.",
+    "Inmarsat satellite data showed the plane flew south into the Indian Ocean.",
+    "The captain's home flight simulator contained a route simulation consistent with the actual flight path.",
+    "Debris confirmed to be from MH370 was found on Réunion Island in July 2015.",
+    "Additional debris was found on the coasts of Mozambique, South Africa, and Madagascar in 2016.",
+    "The aircraft's ACARS (Aircraft Communications Addressing and Reporting System) was disabled before the transponder.",
+    "All 239 people on board — 227 passengers and 12 crew — remain missing.",
+    "A 120,000 km² underwater search of the southern Indian Ocean was completed in 2017 without finding the main wreckage."
+  ],
+  "unknowns": [
+    "Why did the aircraft change course and turn back over Malaysia?",
+    "Who was in control of the aircraft after 01:21 AM?",
+    "Why were both the ACARS and transponder disabled?",
+    "Why did the captain have a matching flight simulation on his home computer?",
+    "Where exactly did the aircraft crash?",
+    "Why has the main wreckage never been located despite massive search efforts?",
+    "What happened in the final minutes of the flight?"
+  ],
+  "evidence": [
+    {
+      "id": "e1",
+      "title": "Satellite Handshake Data (BTO/BFO)",
+      "description": "Inmarsat satellites recorded seven 'handshake' pings from the aircraft's satellite data unit. The Burst Timing Offset and Burst Frequency Offset data was used to calculate that the plane flew south into the Indian Ocean.",
+      "source": "Inmarsat / ATSB",
+      "reliability": "High",
+      "importance": "Critical"
+    },
+    {
+      "id": "e2",
+      "title": "Military Radar Track",
+      "description": "Malaysian military radar tracked an unidentified aircraft (later determined to be MH370) flying west across the Malay Peninsula and into the Strait of Malacca before disappearing from radar range.",
+      "source": "Royal Malaysian Air Force",
+      "reliability": "High",
+      "importance": "High"
+    },
+    {
+      "id": "e3",
+      "title": "Captain Zaharie's Flight Simulator Data",
+      "description": "Investigators found deleted files on Zaharie Ahmad Shah's home flight simulator that contained a route with waypoints consistent with the path MH370 actually flew. The files were deleted weeks before the disappearance.",
+      "source": "FBI forensic analysis",
+      "reliability": "Medium",
+      "importance": "High"
+    },
+    {
+      "id": "e4",
+      "title": "Réunion Island Flaperon",
+      "description": "A Boeing 777 flaperon was found on Réunion Island on July 29, 2015. French and Malaysian investigators confirmed it came from MH370 based on maintenance records and serial numbers.",
+      "source": "French BEA / Malaysian DCA",
+      "reliability": "High",
+      "importance": "High"
+    },
+    {
+      "id": "e5",
+      "title": "ACARS Transmission Gap",
+      "description": "The ACARS system, which automatically sends maintenance data, stopped transmitting new reports before the transponder went offline. The exact time of ACARS disabling is uncertain — it may have been switched off manually.",
+      "source": "Malaysian ICAO report",
+      "reliability": "Medium",
+      "importance": "Medium"
+    },
+    {
+      "id": "e6",
+      "title": "Final SATCOM Handshake Anomaly",
+      "description": "An unexpected partial handshake at 00:19 UTC (08:19 MYT) suggests the satellite data unit may have restarted — possibly indicating a power interruption or someone cycling aircraft systems.",
+      "source": "Inmarsat / ATSB",
+      "reliability": "Medium",
+      "importance": "Medium"
+    },
+    {
+      "id": "e7",
+      "title": "Passenger and Crew Screening",
+      "description": "All 239 passengers and crew were screened by intelligence agencies from multiple countries. No confirmed terrorist links or suspicious communications were found for any individual except the unresolved questions around the captain.",
+      "source": "Interpol / Malaysian authorities",
+      "reliability": "High",
+      "importance": "Medium"
+    }
+  ],
+  "theories": [
+    {
+      "id": "t1",
+      "name": "Deliberate Pilot Action",
+      "description": "Captain Zaharie Ahmad Shah deliberately diverted and crashed the aircraft, possibly as an elaborate suicide or politically motivated act.",
+      "support_level": "Strong Support",
+      "supporting_evidence": [
+        "Flight simulator at home contained a matching route",
+        "Route deviation required deliberate manual input",
+        "ACARS disabled before transponder — suggests sequence of deliberate actions",
+        "Plane flew for 7 hours — inconsistent with sudden accident"
+      ],
+      "contradicting_evidence": [
+        "No confirmed suicide note or motive",
+        "Zaharie was described by colleagues as professional and stable",
+        "No distress communication was made",
+        "Family members dispute the narrative"
+      ]
+    },
+    {
+      "id": "t2",
+      "name": "Hypoxia / Incapacitation",
+      "description": "A sudden loss of pressurization incapacitated the crew. The autopilot continued flying the aircraft until fuel exhaustion.",
+      "support_level": "Moderate Support",
+      "supporting_evidence": [
+        "Aircraft flew on a steady autopilot heading for hours",
+        "No distress call — consistent with sudden incapacitation",
+        "Similar incidents have occurred before (Helios 522)"
+      ],
+      "contradicting_evidence": [
+        "ACARS and transponder were deliberately disabled before any depressurization event",
+        "Disabling systems requires deliberate action from the cockpit",
+        "Route deviations are inconsistent with simple autopilot flight"
+      ]
+    },
+    {
+      "id": "t3",
+      "name": "Hijacking / Third-Party Control",
+      "description": "An unknown party hijacked the aircraft and deliberately flew it off course.",
+      "support_level": "Weak Support",
+      "supporting_evidence": [
+        "Deliberate disabling of tracking systems could indicate hostile takeover",
+        "Route change required pilot-level knowledge"
+      ],
+      "contradicting_evidence": [
+        "No terror group claimed responsibility",
+        "No communications or demands were ever made",
+        "Passenger screening found no confirmed extremist links",
+        "Hijacker would need extraordinary aircraft knowledge to disable systems"
+      ]
+    },
+    {
+      "id": "t4",
+      "name": "Mechanical Failure / Fire",
+      "description": "A catastrophic mechanical failure or cargo fire caused the crew to divert, and eventually disabled the aircraft.",
+      "support_level": "Weak Support",
+      "supporting_evidence": [
+        "The Boeing 777 had carried lithium-ion batteries in the cargo hold",
+        "A fire could explain lost communications"
+      ],
+      "contradicting_evidence": [
+        "Aircraft flew for 7 hours — inconsistent with uncontrolled fire",
+        "No mayday call was transmitted",
+        "Deliberate system disabling is not consistent with a fire scenario"
+      ]
+    }
+  ],
+  "interpretability": {
+    "most_important_evidence": [
+      { "item": "Satellite BTO/BFO Handshake Data", "importance": "Critical", "reason": "Only direct technical record of the plane's path after radar contact was lost." },
+      { "item": "Military Radar Track", "importance": "High", "reason": "Confirmed the plane made a deliberate westward turn — ruling out simple autopilot continuation." },
+      { "item": "Captain's Simulator Route", "importance": "High", "reason": "Suggests premeditation, though the data was recovered from deleted files and is disputed." },
+      { "item": "Réunion Island Debris", "importance": "High", "reason": "Confirmed the aircraft crashed in or near the southern Indian Ocean." },
+      { "item": "ACARS Disabling Sequence", "importance": "Medium", "reason": "Suggests systems were disabled in a deliberate order, not lost simultaneously to a catastrophic event." }
+    ],
+    "reasoning_trace": [
+      {
+        "step": 1,
+        "observation": "The aircraft made a deliberate westward turn after the final voice communication.",
+        "implication": "Rules out navigation system failure as the sole cause — someone or something actively changed the route."
+      },
+      {
+        "step": 2,
+        "observation": "Both ACARS and the transponder were disabled in sequence.",
+        "implication": "Disabling two separate systems in order strongly suggests intentional action, not a single failure event."
+      },
+      {
+        "step": 3,
+        "observation": "The plane flew for 7+ hours on a consistent heading into the southern Indian Ocean.",
+        "implication": "Consistent with either autopilot controlled flight or a deliberate destination, not with emergency or in-flight disintegration."
+      },
+      {
+        "step": 4,
+        "observation": "The captain's simulator contained deleted waypoints matching the actual route.",
+        "implication": "Raises the probability of premeditation, though this evidence alone is not conclusive."
+      },
+      {
+        "step": 5,
+        "observation": "No passenger, crew member, or external actor has been confirmed as responsible.",
+        "implication": "The lack of an alternative explanation strengthens — but does not prove — the deliberate pilot action theory."
+      }
+    ],
+    "conclusion": "The weight of available evidence suggests deliberate human action as the most probable cause. The sequence of system disabling, route deviation, and the captain's simulator data all point in this direction. However, no direct proof of motive exists, and no alternative theory has been fully ruled out. This case remains officially unsolved."
+  }
+}

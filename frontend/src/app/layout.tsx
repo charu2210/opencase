@@ -48,8 +48,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   letterSpacing: ".04em",
                   transition: "color .15s",
                 }}
-                onMouseOver={e => (e.currentTarget.style.color = "var(--ink)")}
-                onMouseOut={e => (e.currentTarget.style.color = "var(--muted)")}
               >
                 {label}
               </Link>

@@ -11,6 +11,7 @@ import os
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import google.generativeai as genai
+from mcp.cache_tools import generate_cache_key, get_cached_response, set_cached_response
 
 router = APIRouter()
 
@@ -193,8 +194,22 @@ async def ask_investigator(request: InvestigatorRequest):
 
     user_message = f"Question about the {case['name']} case: {request.question}"
 
+    # Cache check
+    cache_key = generate_cache_key(request.case_id, mode, request.question)
+    cached_answer = get_cached_response(cache_key)
+    if cached_answer:
+        return {
+            "case_id": request.case_id,
+            "case_name": case["name"],
+            "mode": mode,
+            "question": request.question,
+            "answer": cached_answer,
+            "cached": True
+        }
+
     try:
         answer = await call_gemini(system_prompt, user_message)
+        set_cached_response(cache_key, answer)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"AI error: {str(e)}")
 
@@ -203,7 +218,8 @@ async def ask_investigator(request: InvestigatorRequest):
         "case_name": case["name"],
         "mode": mode,
         "question": request.question,
-        "answer": answer
+        "answer": answer,
+        "cached": False
     }
 
 

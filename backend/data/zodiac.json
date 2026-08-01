@@ -1,0 +1,256 @@
+{
+  "id": "zodiac",
+  "name": "Zodiac Killer",
+  "full_name": "The Zodiac Killer",
+  "status": "Unsolved",
+  "category": "Crime",
+  "date": "1968–1969",
+  "location": "Northern California, USA",
+  "summary": "A serial killer operating in Northern California taunted police and media with cryptic letters and ciphers. The killer's identity was never officially confirmed.",
+  "known_facts": [
+    "Five confirmed murders are attributed to the Zodiac Killer in the San Francisco Bay Area.",
+    "Two victims survived their encounters with the killer.",
+    "The killer sent numerous letters to local newspapers, demanding they be published on the front page.",
+    "The killer included four cryptograms (ciphers) in his letters; only two have been definitively solved.",
+    "The Zodiac claimed responsibility for 37 murders in his letters, though only five are confirmed.",
+    "The killer often attacked young couples in secluded areas, except for cab driver Paul Stine.",
+    "In the Berryessa attack, the killer wore an executioner-type hood with the Zodiac symbol on the chest.",
+    "The killer's letters ceased in 1974, though some later suspected letters are disputed."
+  ],
+  "unknowns": [
+    "What is the true identity of the Zodiac Killer?",
+    "Did the killer truly murder 37 people as claimed?",
+    "Why did the killer abruptly stop communicating in 1974?",
+    "What is the solution to the two remaining unsolved ciphers (Z32 and Z13)?",
+    "Was the Zodiac killer acting alone?",
+    "Did the Zodiac know any of his victims beforehand?",
+    "Why did the Zodiac's MO change during the Paul Stine murder?"
+  ],
+  "evidence": [
+    {
+      "id": "e1",
+      "title": "The Z408 Cipher",
+      "description": "A 408-symbol cryptogram sent in three parts to three different newspapers. It was solved by Donald and Bettye Harden in 1969 and contained a chilling message about collecting slaves for the afterlife.",
+      "source": "Newspaper letters",
+      "reliability": "High",
+      "importance": "High"
+    },
+    {
+      "id": "e2",
+      "title": "The Z340 Cipher",
+      "description": "A 340-symbol cryptogram mailed in November 1969. It was finally cracked in 2020 by a team of amateur codebreakers, revealing a message where the killer denied being the 'Zodiac' who called into a TV show.",
+      "source": "Newspaper letters",
+      "reliability": "High",
+      "importance": "High"
+    },
+    {
+      "id": "e3",
+      "title": "Paul Stine's Shirt",
+      "description": "Pieces of a bloodstained shirt belonging to victim Paul Stine were mailed by the Zodiac as proof of his crimes.",
+      "source": "Mailed letters",
+      "reliability": "High",
+      "importance": "Critical"
+    },
+    {
+      "id": "e4",
+      "title": "Survivor Testimony (Bryan Hartnell)",
+      "description": "Bryan Hartnell survived the attack at Lake Berryessa. He described the killer's voice, demeanor, and the bizarre hooded costume he wore.",
+      "source": "Police interviews",
+      "reliability": "High",
+      "importance": "Critical"
+    },
+    {
+      "id": "e5",
+      "title": "Survivor Testimony (Michael Mageau)",
+      "description": "Michael Mageau survived the Blue Rock Springs shooting and provided a physical description of the shooter.",
+      "source": "Police interviews",
+      "reliability": "Medium",
+      "importance": "High"
+    },
+    {
+      "id": "e6",
+      "title": "Fingerprints from Stine's Cab",
+      "description": "Fingerprints believed to belong to the killer were found in and on Paul Stine's cab, though their definitive connection to the killer is sometimes debated.",
+      "source": "SFPD Crime Scene Investigators",
+      "reliability": "Medium",
+      "importance": "High"
+    },
+    {
+      "id": "e7",
+      "title": "The Zodiac Symbol",
+      "description": "A cross-circle symbol used to sign the letters, resembling a crosshair. This became the killer's signature.",
+      "source": "Letters",
+      "reliability": "High",
+      "importance": "Medium"
+    },
+    {
+      "id": "e8",
+      "title": "Handwriting Samples",
+      "description": "The handwritten letters provided numerous samples. Handwriting analysis has been used to rule out or implicate various suspects.",
+      "source": "Mailed letters",
+      "reliability": "High",
+      "importance": "Critical"
+    },
+    {
+      "id": "e9",
+      "title": "Police Sketch",
+      "description": "A composite sketch generated from descriptions given by witnesses who saw a man leaving the Paul Stine murder scene.",
+      "source": "Witness statements",
+      "reliability": "Medium",
+      "importance": "High"
+    },
+    {
+      "id": "e10",
+      "title": "Bates Murder Connection",
+      "description": "Riverside police suspected the 1966 murder of Cheri Jo Bates was an early Zodiac crime, supported by letters sent to the police and a desk poem. The Zodiac later claimed credit.",
+      "source": "Riverside Police Department",
+      "reliability": "Low",
+      "importance": "Medium"
+    },
+    {
+      "id": "e11",
+      "title": "Car Door Writing",
+      "description": "At Lake Berryessa, the killer wrote the dates of his previous attacks and the current attack on Bryan Hartnell's car door.",
+      "source": "Crime Scene Evidence",
+      "reliability": "High",
+      "importance": "High"
+    },
+    {
+      "id": "e12",
+      "title": "DNA Evidence",
+      "description": "Partial DNA profiles obtained from stamps and envelopes of Zodiac letters. In 2018, police attempted to use genetic genealogy, but no definitive match has been reported.",
+      "source": "SFPD / Vallejo Police",
+      "reliability": "Medium",
+      "importance": "Critical"
+    }
+  ],
+  "theories": [
+    {
+      "id": "t1",
+      "name": "Arthur Leigh Allen",
+      "description": "Arthur Leigh Allen was the prime suspect for decades, based on circumstantial evidence, a friend's tip, and Michael Mageau pointing him out in a lineup in 1991.",
+      "support_level": "Moderate Support",
+      "supporting_evidence": [
+        "Owned a Zodiac brand watch",
+        "Had a friend report he discussed killing people with a flashlight",
+        "Lived near the Vallejo attacks",
+        "Identified by survivor Michael Mageau (decades later)"
+      ],
+      "contradicting_evidence": [
+        "Handwriting did not match the letters",
+        "Fingerprints did not match those from the Stine cab",
+        "Partial DNA from letters did not match him"
+      ]
+    },
+    {
+      "id": "t2",
+      "name": "Gary Francis Poste",
+      "description": "A group called 'The Case Breakers' claimed Gary Francis Poste was the Zodiac, pointing to physical resemblance and an alternate decipherment of letters.",
+      "support_level": "Weak Support",
+      "supporting_evidence": [
+        "Forehead scars purportedly matched the police sketch",
+        "Alternative decoding of an anagram in a Zodiac letter allegedly spells his name"
+      ],
+      "contradicting_evidence": [
+        "The FBI and local police rejected the claims, stating the case remains open",
+        "The anagram decoding method was widely criticized by cryptographers as flawed and subjective",
+        "No direct physical evidence links him to the crimes"
+      ]
+    },
+    {
+      "id": "t3",
+      "name": "Lawrence Kane",
+      "description": "Lawrence Kane was a suspect investigated by officer Harvey Hines. Kane had a criminal record and lived in the areas where the crimes occurred.",
+      "support_level": "Weak Support",
+      "supporting_evidence": [
+        "Possibly recognized by Kathleen Johns (who claimed the Zodiac abducted her)",
+        "Name allegedly found by some in a cipher (though disputed)",
+        "Lived in the same apartment building as one of the victims (Donna Lass, suspected victim)"
+      ],
+      "contradicting_evidence": [
+        "No solid forensic link",
+        "Kathleen Johns' abduction is not definitively a Zodiac crime",
+        "Handwriting did not match"
+      ]
+    },
+    {
+      "id": "t4",
+      "name": "Richard Marshall",
+      "description": "Richard Marshall lived in San Francisco near the Stine murder and had a fascination with old movies, similar to references in Zodiac letters.",
+      "support_level": "Weak Support",
+      "supporting_evidence": [
+        "Lived close to the Stine crime scene",
+        "Used a teletype machine with similar paper to some Zodiac letters",
+        "Enjoyed silent films (Zodiac referenced 'The Mikado' and similar themes)"
+      ],
+      "contradicting_evidence": [
+        "Cleared by SFPD after investigation",
+        "Fingerprints did not match",
+        "No direct evidence"
+      ]
+    },
+    {
+      "id": "t5",
+      "name": "Multiple Killers / Hoax Theory",
+      "description": "The theory that the Zodiac murders were committed by different individuals, and the persona of the 'Zodiac' was a media hoax or a creation by one person taking credit for others' crimes.",
+      "support_level": "Weak Support",
+      "supporting_evidence": [
+        "Differences in MO (lovers' lanes vs. a cab driver in the city)",
+        "Varying descriptions from witnesses",
+        "The Zodiac claimed responsibility for crimes he likely didn't commit"
+      ],
+      "contradicting_evidence": [
+        "Handwriting across letters is largely consistent and confirmed by experts to be from one person",
+        "The letter writer possessed pieces of Paul Stine's shirt, proving the letter writer was the killer in at least that case",
+        "Cross-jurisdictional evidence and details only the killer would know were shared in the letters"
+      ]
+    }
+  ],
+  "interpretability": {
+    "most_important_evidence": [
+      {
+        "item": "Handwriting Samples",
+        "importance": "Critical",
+        "reason": "The most consistent link across the letters, used to verify the killer's communication and eliminate suspects."
+      },
+      {
+        "item": "Paul Stine's Shirt",
+        "importance": "Critical",
+        "reason": "The only definitive physical proof linking the letter writer to the actual murders."
+      },
+      {
+        "item": "Ciphers (Z408 and Z340)",
+        "importance": "High",
+        "reason": "Provides insight into the killer's state of mind and intelligence, though ultimately yielding no identifying information."
+      },
+      {
+        "item": "Fingerprints and DNA",
+        "importance": "High",
+        "reason": "The main forensic tools used to exclude suspects, although their purity and definitive link to the killer are sometimes questioned."
+      }
+    ],
+    "reasoning_trace": [
+      {
+        "step": 1,
+        "observation": "The killer mailed letters containing unreleased details and pieces of a victim's shirt.",
+        "implication": "The letter writer is definitively the killer, at least in the Paul Stine case, and likely the others."
+      },
+      {
+        "step": 2,
+        "observation": "Handwriting experts have largely agreed the letters were written by the same person.",
+        "implication": "The Zodiac persona was not a collaborative hoax, but a single individual communicating with the press."
+      },
+      {
+        "step": 3,
+        "observation": "The prime suspect, Arthur Leigh Allen, was identified by a survivor but did not match DNA, fingerprints, or handwriting.",
+        "implication": "Eyewitness testimony is often fallible, and the physical evidence heavily contradicts his involvement, leaving the case unsolved."
+      },
+      {
+        "step": 4,
+        "observation": "The killer ceased confirmed communications in 1974.",
+        "implication": "The Zodiac either died, was incarcerated for other crimes, or simply chose to stop."
+      }
+    ],
+    "conclusion": "The Zodiac Killer case remains one of the most famous unsolved mysteries. While the letters and physical evidence (such as Stine's shirt) prove the existence of a single serial killer operating under the Zodiac persona, the forensic evidence—specifically fingerprints, DNA, and handwriting—has consistently failed to match the most promising suspects, including Arthur Leigh Allen. Unless new DNA techniques yield a match, the killer's identity will likely remain unknown."
+  }
+}

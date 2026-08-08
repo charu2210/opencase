@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { Theory, InvestigationMode } from "@/types";
 import { askInvestigator } from "@/lib/api";
+import { useAIStream } from "@/hooks/useAIStream";
 
 const MODES: { id: InvestigationMode; label: string; icon: string; desc: string }[] = [
   { id: "detective",  label: "Detective",  icon: "🔍", desc: "Suspects, motives, opportunity" },
@@ -20,9 +21,8 @@ interface Props {
 export default function AIInvestigator({ caseId, caseName, theories }: Props) {
   const [mode, setMode] = useState<InvestigationMode>("detective");
   const [question, setQuestion] = useState("");
-  const [response, setResponse] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  
+  const { loading, error, response, startStream, setResponse, setError, setLoading } = useAIStream();
 
   const SUGGESTED_QUESTIONS = [
     `Why is ${caseName} still unsolved?`,
@@ -33,17 +33,7 @@ export default function AIInvestigator({ caseId, caseName, theories }: Props) {
 
   async function handleAsk() {
     if (!question.trim()) return;
-    setLoading(true);
-    setError(null);
-    setResponse(null);
-    try {
-      const res = await askInvestigator({ question, case_id: caseId, mode });
-      setResponse(res.answer);
-    } catch (e: any) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
+    await startStream({ question, case_id: caseId, mode });
   }
 
   return (
@@ -188,8 +178,8 @@ export default function AIInvestigator({ caseId, caseName, theories }: Props) {
         </div>
       )}
 
-      {/* Loading state */}
-      {loading && (
+      {/* Loading state (initial) */}
+      {loading && !response && (
         <div style={{
           background: "var(--ink)",
           padding: "28px 32px",
@@ -209,7 +199,7 @@ export default function AIInvestigator({ caseId, caseName, theories }: Props) {
       )}
 
       {/* Response */}
-      {response && !loading && (
+      {response && (
         <div style={{
           background: "var(--ink)",
           color: "var(--paper)",
@@ -217,24 +207,36 @@ export default function AIInvestigator({ caseId, caseName, theories }: Props) {
         }}>
           {/* Terminal-style header */}
           <div style={{
-            display: "flex", alignItems: "center", gap: 8,
+            display: "flex", alignItems: "center", justifyContent: "space-between",
             marginBottom: 20, paddingBottom: 16,
             borderBottom: "1px solid rgba(255,255,255,.15)",
           }}>
-            <div style={{ display: "flex", gap: 6 }}>
-              <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#ff5f57" }} />
-              <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#ffbd2e" }} />
-              <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#28ca42" }} />
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ display: "flex", gap: 6 }}>
+                <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#ff5f57" }} />
+                <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#ffbd2e" }} />
+                <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#28ca42" }} />
+              </div>
+              <span style={{
+                fontFamily: "'Courier Prime', monospace",
+                fontSize: ".75rem",
+                letterSpacing: ".1em",
+                color: "rgba(255,255,255,.5)",
+                marginLeft: 8,
+              }}>
+                {MODES.find(m => m.id === mode)?.icon} Mode: {mode.toUpperCase()} · Case: {caseName}
+              </span>
             </div>
-            <span style={{
-              fontFamily: "'Courier Prime', monospace",
-              fontSize: ".75rem",
-              letterSpacing: ".1em",
-              color: "rgba(255,255,255,.5)",
-              marginLeft: 8,
-            }}>
-              {MODES.find(m => m.id === mode)?.icon} Mode: {mode.toUpperCase()} · Case: {caseName}
-            </span>
+            {loading && (
+              <span style={{
+                fontFamily: "'Courier Prime', monospace",
+                fontSize: ".75rem",
+                color: "#28ca42",
+                animation: "pulse 1s infinite",
+              }}>
+                AI is typing...
+              </span>
+            )}
           </div>
 
           <div style={{

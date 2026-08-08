@@ -1,3 +1,9 @@
+feature/ai-endpoint-validation
+__pycache__/
+*.pyc
+.env
+venv/
+
 # Python
 __pycache__/
 *.pyc
@@ -17,3 +23,4 @@ out/
 # OS
 .DS_Store
 Thumbs.db
+ main

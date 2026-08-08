@@ -9,11 +9,19 @@ how the AI frames its analysis.
 import asyncio
 import json
 import os
+feature/ai-endpoint-validation
+import time
+from collections import defaultdict
+
+from fastapi import APIRouter, HTTPException, Request, Depends
+from pydantic import BaseModel, Field, field_validator
+import google.generativeai as genai
 
 import google.generativeai as genai
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
+main
 
 router = APIRouter()
 
@@ -23,24 +31,75 @@ if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
 
 MODEL_NAME = "gemini-1.5-flash"
+GEMINI_TIMEOUT_SECONDS = 15.0
+
+
+# ─── Rate limiting ────────────────────────────────────────────────────────────
+RATE_LIMIT = 10          # requests
+RATE_WINDOW = 60         # seconds
+_request_log: dict[str, list[float]] = defaultdict(list)
+
+
+def check_rate_limit(request: Request):
+    client_ip = request.client.host if request.client else "unknown"
+    now = time.time()
+    _request_log[client_ip] = [t for t in _request_log[client_ip] if now - t < RATE_WINDOW]
+    if len(_request_log[client_ip]) >= RATE_LIMIT:
+        raise HTTPException(status_code=429, detail="Rate limit exceeded. Please try again shortly.")
+    _request_log[client_ip].append(now)
 
 
 # ─── Request/Response models ──────────────────────────────────────────────────
+VALID_MODES = {"detective", "scientist", "journalist", "historian"}
+
+
 class InvestigatorRequest(BaseModel):
-    question: str
-    case_id: str
-    mode: str = "detective"   # detective | scientist | journalist | historian
+    question: str = Field(..., min_length=10, max_length=500)
+    case_id: str = Field(..., min_length=1)
+    mode: str = "detective"
+
+    @field_validator("question")
+    @classmethod
+    def question_not_blank(cls, v: str) -> str:
+        if not v.strip():
+            raise ValueError("Question cannot be empty or whitespace only")
+        return v.strip()
+
+    @field_validator("mode")
+    @classmethod
+    def mode_valid(cls, v: str) -> str:
+        v = v.lower().strip()
+        if v not in VALID_MODES:
+            raise ValueError(f"Mode must be one of: {', '.join(sorted(VALID_MODES))}")
+        return v
 
 
 class TheoryBuildRequest(BaseModel):
-    case_id: str
-    user_theory: str
+    case_id: str = Field(..., min_length=1)
+    user_theory: str = Field(..., min_length=20, max_length=1000)
+
+    @field_validator("user_theory")
+    @classmethod
+    def theory_not_blank(cls, v: str) -> str:
+        if not v.strip():
+            raise ValueError("Theory cannot be empty or whitespace only")
+        return v.strip()
+
+
+class CompareTheoriesRequest(BaseModel):
+    case_id: str = Field(..., min_length=1)
+    theory_a: str = Field(..., min_length=10, max_length=1000)
+    theory_b: str = Field(..., min_length=10, max_length=1000)
+
+    @field_validator("theory_a", "theory_b")
+    @classmethod
+    def theory_not_blank(cls, v: str) -> str:
+        if not v.strip():
+            raise ValueError("Theory cannot be empty or whitespace only")
+        return v.strip()
 
 
 # ─── INVESTIGATION MODE PROMPT TEMPLATES ─────────────────────────────────────
-# This section demonstrates Feature 3: Investigation Modes (Prompt Engineering)
-# The same question produces structurally different responses based on mode.
-
 MODE_SYSTEM_PROMPTS = {
     "detective": """You are a seasoned homicide and cold-case detective analyzing an unsolved case.
 Your job is to reason about suspects, motives, opportunity, and the sequence of events.
@@ -93,7 +152,6 @@ Format your response with these exact sections:
 ## What History Tells Us About Cases Like This"""
 }
 
-# Shared rules appended to every prompt regardless of mode
 UNIVERSAL_RULES = """
 IMPORTANT RULES (apply these in every response, regardless of mode):
 - Never present speculation as established fact.
@@ -114,8 +172,14 @@ def load_case(case_id: str) -> dict:
         return json.load(f)
 
 
+def get_case_or_404(case_id: str) -> dict:
+    case = load_case(case_id)
+    if case is None:
+        raise HTTPException(status_code=404, detail=f"Case '{case_id}' not found")
+    return case
+
+
 def build_context_from_case(case: dict) -> str:
-    """Build a structured case summary to inject into every prompt."""
     known = "\n".join(f"- {f}" for f in case.get("known_facts", []))
     unknowns = "\n".join(f"- {u}" for u in case.get("unknowns", []))
     evidence = "\n".join(
@@ -140,12 +204,7 @@ EVIDENCE ON RECORD:
 """
 
 
-async def call_gemini(system_prompt: str, user_message: str) -> str:
-    """Call Gemini with a system prompt and user message. Returns the text response."""
-    if not GEMINI_API_KEY:
-        # Return a mock response when no API key is set (for development)
-        return _mock_response(user_message)
-
+def _call_gemini_sync(system_prompt: str, user_message: str) -> str:
     model = genai.GenerativeModel(
         model_name=MODEL_NAME,
         system_instruction=system_prompt
@@ -154,8 +213,24 @@ async def call_gemini(system_prompt: str, user_message: str) -> str:
     return response.text
 
 
+async def call_gemini(system_prompt: str, user_message: str) -> str:
+    """Call Gemini with a timeout. Falls back to a mock response if no API key."""
+    if not GEMINI_API_KEY:
+        return _mock_response(user_message)
+
+    try:
+        return await asyncio.wait_for(
+            asyncio.to_thread(_call_gemini_sync, system_prompt, user_message),
+            timeout=GEMINI_TIMEOUT_SECONDS
+        )
+    except asyncio.TimeoutError:
+        raise HTTPException(
+            status_code=504,
+            detail="The AI service took too long to respond. Please try again."
+        )
+
+
 def _mock_response(question: str) -> str:
-    """Fallback mock when no Gemini API key is configured."""
     return f"""## Mock Response (No API Key)
 
 This is a placeholder response for: "{question}"
@@ -170,45 +245,41 @@ the selected investigation mode (Detective, Scientist, Journalist, or Historian)
 
 # ─── ENDPOINTS ───────────────────────────────────────────────────────────────
 
-@router.post("/ask")
+@router.post("/ask", dependencies=[Depends(check_rate_limit)])
 async def ask_investigator(request: InvestigatorRequest):
-    """
-    Feature 2 + Feature 3: AI Investigator with Investigation Modes.
-    Sends the user's question to Gemini with a mode-specific prompt and
-    injects the full case file as context.
-    """
-    case = load_case(request.case_id)
-    if case is None:
-        raise HTTPException(status_code=404, detail=f"Case '{request.case_id}' not found")
+    case = get_case_or_404(request.case_id)
 
-    mode = request.mode.lower()
-    if mode not in MODE_SYSTEM_PROMPTS:
-        raise HTTPException(status_code=400, detail=f"Unknown mode '{mode}'. Choose: detective, scientist, journalist, historian")
-
-    # Build the full system prompt
     system_prompt = (
-        MODE_SYSTEM_PROMPTS[mode]
+        MODE_SYSTEM_PROMPTS[request.mode]
         + "\n\n"
         + UNIVERSAL_RULES
         + "\n\n"
         + build_context_from_case(case)
     )
-
     user_message = f"Question about the {case['name']} case: {request.question}"
 
     try:
         answer = await call_gemini(system_prompt, user_message)
+    except HTTPException:
+        raise
     except Exception as e:
+feature/ai-endpoint-validation
+        raise HTTPException(status_code=502, detail=f"AI service error: {str(e)}")
+
         raise HTTPException(status_code=500, detail=f"AI error: {e!s}")
+main
 
     return {
         "case_id": request.case_id,
         "case_name": case["name"],
-        "mode": mode,
+        "mode": request.mode,
         "question": request.question,
         "answer": answer
     }
 
+
+ feature/ai-endpoint-validation
+@router.post("/build-theory", dependencies=[Depends(check_rate_limit)])
 
 @router.post("/ask-stream")
 async def ask_investigator_stream(request: InvestigatorRequest):
@@ -263,14 +334,9 @@ async def ask_investigator_stream(request: InvestigatorRequest):
 
 
 @router.post("/build-theory")
+ main
 async def build_theory(request: TheoryBuildRequest):
-    """
-    Feature 5: Build Your Theory.
-    User submits a custom theory; Gemini evaluates it against the case evidence.
-    """
-    case = load_case(request.case_id)
-    if case is None:
-        raise HTTPException(status_code=404, detail=f"Case '{request.case_id}' not found")
+    case = get_case_or_404(request.case_id)
 
     system_prompt = f"""You are an evidence analyst evaluating a user-submitted theory about an unsolved case.
 Your job is to fairly and rigorously test the theory against available evidence.
@@ -296,8 +362,14 @@ Format your response with these exact sections:
 
     try:
         answer = await call_gemini(system_prompt, user_message)
+    except HTTPException:
+        raise
     except Exception as e:
+ feature/ai-endpoint-validation
+        raise HTTPException(status_code=502, detail=f"AI service error: {str(e)}")
+
         raise HTTPException(status_code=500, detail=f"AI error: {e!s}")
+ main
 
     return {
         "case_id": request.case_id,
@@ -307,15 +379,9 @@ Format your response with these exact sections:
     }
 
 
-@router.post("/compare-theories")
-async def compare_theories(case_id: str, theory_a: str, theory_b: str):
-    """
-    Feature 4: Theory Comparator.
-    Compares two named theories against the case evidence.
-    """
-    case = load_case(case_id)
-    if case is None:
-        raise HTTPException(status_code=404, detail=f"Case '{case_id}' not found")
+@router.post("/compare-theories", dependencies=[Depends(check_rate_limit)])
+async def compare_theories(request: CompareTheoriesRequest):
+    case = get_case_or_404(request.case_id)
 
     system_prompt = f"""You are a neutral evidence analyst comparing two competing theories about an unsolved case.
 Present both theories fairly. Do not favor one unless the evidence clearly does.
@@ -339,17 +405,23 @@ Format your response with these exact sections:
 ## Missing Evidence (what both theories need)
 ## Overall Assessment (which theory is better supported by current evidence, and why)"""
 
-    user_message = f"Compare these two theories about the {case['name']} case: Theory A = '{theory_a}', Theory B = '{theory_b}'"
+    user_message = f"Compare these two theories about the {case['name']} case: Theory A = '{request.theory_a}', Theory B = '{request.theory_b}'"
 
     try:
         answer = await call_gemini(system_prompt, user_message)
+    except HTTPException:
+        raise
     except Exception as e:
+ feature/ai-endpoint-validation
+        raise HTTPException(status_code=502, detail=f"AI service error: {str(e)}")
+
         raise HTTPException(status_code=500, detail=f"AI error: {e!s}")
+ main
 
     return {
-        "case_id": case_id,
+        "case_id": request.case_id,
         "case_name": case["name"],
-        "theory_a": theory_a,
-        "theory_b": theory_b,
+        "theory_a": request.theory_a,
+        "theory_b": request.theory_b,
         "comparison": answer
     }

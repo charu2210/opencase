@@ -6,11 +6,14 @@ Each investigation mode uses a carefully crafted prompt that shapes
 how the AI frames its analysis.
 """
 
+import asyncio
 import json
 import os
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+
 import google.generativeai as genai
+from fastapi import APIRouter, HTTPException
+from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
 
 router = APIRouter()
 
@@ -196,7 +199,7 @@ async def ask_investigator(request: InvestigatorRequest):
     try:
         answer = await call_gemini(system_prompt, user_message)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"AI error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"AI error: {e!s}")
 
     return {
         "case_id": request.case_id,
@@ -205,6 +208,58 @@ async def ask_investigator(request: InvestigatorRequest):
         "question": request.question,
         "answer": answer
     }
+
+
+@router.post("/ask-stream")
+async def ask_investigator_stream(request: InvestigatorRequest):
+    """
+    Feature 6: AI Investigator with Real-Time Streaming.
+    Sends the user's question to Gemini with a mode-specific prompt and
+    injects the full case file as context. Yields Server-Sent Events (SSE).
+    """
+    case = load_case(request.case_id)
+    if case is None:
+        raise HTTPException(status_code=404, detail=f"Case '{request.case_id}' not found")
+
+    mode = request.mode.lower()
+    if mode not in MODE_SYSTEM_PROMPTS:
+        raise HTTPException(status_code=400, detail=f"Unknown mode '{mode}'. Choose: detective, scientist, journalist, historian")
+
+    # Build the full system prompt
+    system_prompt = (
+        MODE_SYSTEM_PROMPTS[mode]
+        + "\n\n"
+        + UNIVERSAL_RULES
+        + "\n\n"
+        + build_context_from_case(case)
+    )
+
+    user_message = f"Question about the {case['name']} case: {request.question}"
+
+    async def stream_generator():
+        if not GEMINI_API_KEY:
+            # Yield a mock response chunk by chunk for testing
+            mock_text = _mock_response(user_message)
+            for word in mock_text.split(" "):
+                yield f"data: {json.dumps({'text': word + ' '})}\n\n"
+                await asyncio.sleep(0.05)
+            yield "data: [DONE]\n\n"
+            return
+
+        try:
+            model = genai.GenerativeModel(
+                model_name=MODEL_NAME,
+                system_instruction=system_prompt
+            )
+            response = model.generate_content(user_message, stream=True)
+            for chunk in response:
+                if chunk.text:
+                    yield f"data: {json.dumps({'text': chunk.text})}\n\n"
+            yield "data: [DONE]\n\n"
+        except Exception as e:
+            yield f"data: {json.dumps({'error': str(e)})}\n\n"
+
+    return StreamingResponse(stream_generator(), media_type="text/event-stream")
 
 
 @router.post("/build-theory")
@@ -242,7 +297,7 @@ Format your response with these exact sections:
     try:
         answer = await call_gemini(system_prompt, user_message)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"AI error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"AI error: {e!s}")
 
     return {
         "case_id": request.case_id,
@@ -289,7 +344,7 @@ Format your response with these exact sections:
     try:
         answer = await call_gemini(system_prompt, user_message)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"AI error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"AI error: {e!s}")
 
     return {
         "case_id": case_id,

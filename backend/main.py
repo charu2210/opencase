@@ -59,3 +59,7 @@ def root():
 def cache_stats():
     from mcp.cache_tools import get_cache_statistics
     return get_cache_statistics()
+
+@app.get("/mcp/health", tags=["MCP"])
+def mcp_health():
+    return {"status": "ok", "mcp_server": "running"}

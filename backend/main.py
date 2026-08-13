@@ -53,3 +53,13 @@ app.include_router(theory.router, prefix="/api/theory", tags=["Theory Tools"])
 @app.get("/")
 def root():
     return {"message": "OpenCase API is running", "version": "1.0.0"}
+
+
+@app.get("/api/cache/stats", tags=["System"])
+def cache_stats():
+    from mcp.cache_tools import get_cache_statistics
+    return get_cache_statistics()
+
+@app.get("/mcp/health", tags=["MCP"])
+def mcp_health():
+    return {"status": "ok", "mcp_server": "running"}
